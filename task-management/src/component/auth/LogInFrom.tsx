@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
+import Link from 'next/link';
 
 export default function LogInForm() {
   const [email, setEmail] = useState('');
@@ -96,6 +97,12 @@ export default function LogInForm() {
         >
           {loading ? 'Signing in…' : 'Log In'}
         </button>
+        <div className="text-center text-sm text-gray-600">
+          Don't have an account?{' '}
+          <Link href="/auth/registration" className="text-blue-500 hover:underline">
+            Sign Up
+          </Link>
+        </div>
       </form>
     </div>
   );
