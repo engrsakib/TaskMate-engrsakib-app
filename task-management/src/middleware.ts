@@ -1,12 +1,15 @@
 import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
- 
-// This function can be marked `async` if using `await` inside
-export function middleware(request: NextRequest) {
-  return NextResponse.redirect(new URL('/home', request.url))
+
+export const middleware = (request:Request) => {
+  
+  const cookies = request.headers.get('cookie')?.split('; ').find(cookie => cookie.startsWith('auth_token='))?.split('=')[1];
+  if (!cookies) {
+    return NextResponse.redirect(new URL('/auth/login', request.url))
+  }
+  return NextResponse.next()
 }
- 
-// See "Matching Paths" below to learn more
+
+
 export const config = {
-  matcher: '/about/:path*',
+  matcher: ['/']
 }

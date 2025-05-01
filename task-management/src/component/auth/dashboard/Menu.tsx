@@ -5,6 +5,7 @@ import { LuClock12 } from "react-icons/lu";
 import { PiSpinnerGapFill } from "react-icons/pi";
 import userImage from "@/assets/images/user.svg";
 import { MdOutlineArrowDropDown } from "react-icons/md";
+import Link from "next/link";
 export default function Menu() {
   const user = {
     FirstName: "Md. Nazmus ",
@@ -28,12 +29,12 @@ export default function Menu() {
         {/* middle */}
         <div>
           <ul className="flex gap-8 mt-4">
-            <li className="text-white text-lg font-500 flex items-center gap-x-1">
+            <Link href="/dashboard"><li className="text-white text-lg font-500 flex items-center gap-x-1">
               <FaClipboardList /> Task{" "}
-            </li>
-            <li className="text-white text-lg font-500 flex items-center gap-x-1">
+            </li></Link>
+            <Link href="/dashboard/spine"><li className="text-white text-lg font-500 flex items-center gap-x-1">
               <PiSpinnerGapFill /> Spin
-            </li>
+            </li></Link>
           </ul>
         </div>
         {/* user data part */}
