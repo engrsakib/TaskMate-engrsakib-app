@@ -145,6 +145,17 @@ async function run() {
       }
       res.status(200).send(result);
     });
+    // finds Task by user email and task id
+    app.get("/task/:id", async (req, res) => {
+      const id = req.params.id;
+      
+      const query = { _id: new ObjectId(id) };
+      const result = await TasMateTasks.findOne(query);
+      if(!result) {
+        return res.status(404).send({ message: "Task not found" });
+      }
+      res.status(200).send(result);
+    });
     // add task in database
 
   
