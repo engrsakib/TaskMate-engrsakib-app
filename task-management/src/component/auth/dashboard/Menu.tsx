@@ -37,7 +37,7 @@ export default function Menu() {
         {/* middle */}
         <div>
           <ul className="flex gap-8 mt-4">
-            <Link className={`${pathName === "/dashboard" ? "text-[#60e5ae]" : "text-white"}`} href="/dashboard"><li className=" text-lg font-500 flex items-center gap-x-1">
+            <Link className={`${pathName.includes("/dashboard") ? "text-[#60e5ae]" : "text-white"}`} href="/dashboard"><li className=" text-lg font-500 flex items-center gap-x-1">
               <FaClipboardList /> Task{" "}
             </li></Link>
 

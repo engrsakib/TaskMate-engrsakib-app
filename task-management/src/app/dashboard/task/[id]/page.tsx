@@ -1,3 +1,4 @@
+"use client";
 import getATask from "@/lib/task/getATask";
 import React from "react";
 import { BsCalendarDate } from "react-icons/bs";
@@ -10,7 +11,14 @@ export default async function page({ params }: { params: { id: string } }) {
   return (
     <div className="bg-white w-[90%] mx-auto py-4 min-h-screen lg:h-screen border-transparent rounded-2xl drop-shadow-2xl">
       {/* menue */}
-      <div className="border-b-1 h-[100px] border-gray-600 p-4 flex justify-between items-center"></div>
+      <div className="border-b-1 h-[100px] border-gray-600 p-4 flex justify-between items-center">
+        <h1 className="text-2xl text-black">Task Details</h1>
+
+        <div className="flex items-center gap-x-2">
+          <button className="btn btn-primary">Edit</button>
+          <button className="btn btn-secondary">Delete</button>
+          </div>
+      </div>
       {/* task detials */}
       <div className="w-full h-[80%] flex flex-col justify-between ">
         <div className="w-10/12 mt-9 mx-auto flex items-center gap-x-1">
@@ -63,10 +71,11 @@ export default async function page({ params }: { params: { id: string } }) {
             defaultValue="Pick a Runtime"
             className="select select-success"
           >
-            <option disabled={true}>Pick a Runtime</option>
-            <option>npm</option>
-            <option>Bun</option>
-            <option>yarn</option>
+            <option disabled={true}>Pick a category</option>
+            <option>pending</option>
+            <option>inprogress</option>
+            <option>ongoing</option>
+            <option>completed</option>
           </select>
         </div>
       </div>
