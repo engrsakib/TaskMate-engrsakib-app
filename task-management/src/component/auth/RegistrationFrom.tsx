@@ -2,6 +2,7 @@
 import React, { useState, useMemo } from 'react';
 import Swal from 'sweetalert2';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
+import Link from 'next/link';
 
 export default function RegistrationForm() {
   const [fullName, setFullName] = useState('');
@@ -58,6 +59,9 @@ export default function RegistrationForm() {
   return (
     <div className="max-w-md mx-auto p-6">
       <h1 className="text-4xl font-semibold text-center">Register</h1>
+      <h2 className="text-gray-600 text-center mt-2">
+        To Create Account, Please Fill In The Details Below.
+      </h2>
       <form onSubmit={handleSubmit} className="mt-6 space-y-5">
         <input
           type="text" required
@@ -110,10 +114,16 @@ export default function RegistrationForm() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 disabled:opacity-50 transition"
+          className="w-full bg-[rgb(86,296,229)] text-black py-2 rounded hover:bg-[rgb(78,228,203)] disabled:opacity-50 transition"
         >
           {loading ? 'Registering…' : 'Register'}
         </button>
+        <div className="text-center text-sm text-gray-600">
+          Already have an account?{' '}
+          <Link href="/auth/login" className="text-blue-500 hover:underline">
+            Sign Up
+          </Link>
+        </div>
       </form>
     </div>
   );
