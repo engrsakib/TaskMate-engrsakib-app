@@ -1,9 +1,16 @@
-"use client"
 import Image from 'next/image';
 import React from 'react'
 import noData from '@/assets/images/nodata.svg'
-export default function DashboardItems() {
-    const [task, setTask] = React.useState([]);
+import getAllTask from '@/lib/task/getAllTask';
+import DashboardTask from './DashboardTask';
+
+export default async function DashboardItems() {
+    const user = {
+        email: "engrsakib02@gmail.com"
+    }
+    const task = await getAllTask(user);
+
+    
 
     if(task.length === 0) {
         return (<>
@@ -15,8 +22,8 @@ export default function DashboardItems() {
         </>)
     }
     return (
-        <div>
-          
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4'>
+          {task.map((item: object) => (<DashboardTask key={item._id} task={item} />))}
         </div>
       )
 

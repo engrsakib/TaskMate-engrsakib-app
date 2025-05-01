@@ -69,18 +69,16 @@ async function run() {
     // );
 
     // database filed create
-    const bloodCallectionUser = client
-      .db("bloodCallections")
+    const TaskMate = client
+      .db("TaskMate")
       .collection("users");
-    const bloodCallectionDonation = client
-      .db("bloodCallections")
-      .collection("donations");
-    const bloodCallectionBlogs = client
-      .db("bloodCallections")
-      .collection("blogs");
-    const bloodCallectionFund = client
-      .db("bloodCallections")
-      .collection("funds");
+    
+    const TasMateTasks = client
+      .db("TaskMate")
+      .collection("task");
+
+
+
 
     // user related query
     // get users
@@ -88,7 +86,7 @@ async function run() {
       try {
         const email = req.params.mail;
 
-        const result = await bloodCallectionUser.findOne({ email });
+        const result = await TaskMate.findOne({ email });
 
         if (!result) {
           return res.status(404).send({ message: "User not found" });
@@ -131,120 +129,27 @@ async function run() {
     app.post("/users", async (req, res) => {
       const newUser = req.body;
       // console.log(newUser);
-      const result = await bloodCallectionUser.insertOne(newUser);
+      const result = await TaskMate.insertOne(newUser);
       res.send(result);
     });
 
-    // user update
-    app.put("/users/update/:id", async (req, res) => {
-      const mail = req.params.id;
-      const updateData = req.body;
 
-      try {
-        const filter = { email: mail };
-        const updateDoc = {
-          $set: {
-            name: updateData.name,
-            photoUrl: updateData.photoUrl,
-            bloodGroup: updateData.bloodGroup,
-            district: updateData.district,
-            upazila: updateData.upazila,
-            lastDonation: updateData.lastDonation || null,
-          },
-        };
-
-        const result = await bloodCallectionUser.updateOne(filter, updateDoc);
-
-        if (result.matchedCount === 0) {
-          return res
-            .status(404)
-            .json({ message: "User not found or invalid ID" });
-        }
-
-        res.status(200).json({
-          message: "User profile updated successfully",
-          result,
-        });
-      } catch (error) {
-        console.error("Error updating user profile:", error);
-        res.status(500).json({ message: "Failed to update user profile" });
+    // finds Task by user email
+    app.get("/tasks/:email", async (req, res) => {
+      const email = req.params.email;
+      
+      const query = { email: email };
+      const result = await TasMateTasks.find(query).toArray();
+      if(!result) {
+        return res.status(404).send({ message: "Task not found" });
       }
+      res.status(200).send(result);
     });
+    // add task in database
 
-    // all users
-    app.get("/users", async (req, res) => {
-      try {
-        const result = await bloodCallectionUser.find({}).toArray();
-
-        if (!result || result.length === 0) {
-          return res.status(404).send({ message: "No users found" });
-        }
-
-        res.send(result);
-      } catch (error) {
-        console.error("Error fetching users:", error);
-        res.status(500).send({ message: "Internal server error" });
-      }
-    });
-
-    // user statuts update
-    app.put("/users/status/:id", async (req, res) => {
-      try {
-        const { id } = req.params;
-        const { status } = req.body;
-
-        if (!status) {
-          return res.status(400).send({ message: "Status is required" });
-        }
-
-        // console.log("User ID:", id);
-        // console.log("Status:", status);
-
-        const result = await bloodCallectionUser.updateOne(
-          { _id: new ObjectId(id) }, // Make sure ObjectId is imported correctly
-          { $set: { status: status } } // Correctly set the status field
-        );
-
-        if (result.modifiedCount === 0) {
-          return res
-            .status(404)
-            .send({ message: "User not found or status is already the same" });
-        }
-
-        res.send(result);
-      } catch (error) {
-        console.error("Error updating status:", error);
-        res.status(500).send({ message: "Failed to update status" });
-      }
-    });
-
-    // user Delete function
-    app.delete("/users/:id", async (req, res) => {
-      try {
-        const { id } = req.params;
-        const result = await bloodCallectionUser.deleteOne({
-          _id: new ObjectId(id),
-        });
-        res.send(result);
-      } catch (error) {
-        res.status(500).send({ message: "Failed to delete user" });
-      }
-    });
-
-    // update roles
-    app.put("/users/role/:id", async (req, res) => {
-      try {
-        const { id } = req.params;
-        const { role } = req.body;
-        const result = await bloodCallectionUser.updateOne(
-          { _id: new ObjectId(id) },
-          { $set: { role } }
-        );
-        res.send(result);
-      } catch (error) {
-        res.status(500).send({ message: "Failed to update role" });
-      }
-    });
+  
+  
+    
 
     // donations related works
 
