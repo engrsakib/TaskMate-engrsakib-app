@@ -24,8 +24,8 @@ const handleSpinClick = () => {
     };
 
   return (
-    <div style={{ textAlign: 'center' }}>
-      <h2>Spin Wheel</h2>
+    <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
+    
       <Wheel
         mustStartSpinning={mustSpin}
         prizeNumber={prizeNumber}
@@ -35,7 +35,7 @@ const handleSpinClick = () => {
     alert(`Selected Task: ${data[prizeNumber].option}`);
   }}
 />
-<button onClick={handleSpinClick} style={{ marginTop: '20px' }}>
+<button className="btn btn-wide btn-success p-3" onClick={handleSpinClick} style={{ marginTop: '20px' }}>
   Spin
 </button>
     </div>

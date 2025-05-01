@@ -1,12 +1,18 @@
+'use client'
 import Image from "next/image";
 import React from "react";
 import { FaClipboardList } from "react-icons/fa";
+
 import { LuClock12 } from "react-icons/lu";
 import { PiSpinnerGapFill } from "react-icons/pi";
 import userImage from "@/assets/images/user.svg";
 import { MdOutlineArrowDropDown } from "react-icons/md";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+
 export default function Menu() {
+  const pathName = usePathname();
+  
   const user = {
     FirstName: "Md. Nazmus ",
     LastName: "Sakib",
@@ -14,13 +20,15 @@ export default function Menu() {
     img: userImage,
     role: "admin",
   };
+
+
   return (
     <div className="w-[80%] mx-auto pt-8">
       {/* first */}
       <div className="flex justify-between items-center">
         {/* left */}
         <div className="flex items-center gap-4">
-          <div className="w-[55px] h-[55px] rounded-xl bg-warning text-2xl text-white flex justify-center items-center">
+          <div className={`w-[55px] h-[55px] rounded-xl bg-warning text-2xl text-white flex justify-center items-center`}>
             {" "}
             <LuClock12 />
           </div>{" "}
@@ -29,11 +37,12 @@ export default function Menu() {
         {/* middle */}
         <div>
           <ul className="flex gap-8 mt-4">
-            <Link href="/dashboard"><li className="text-white text-lg font-500 flex items-center gap-x-1">
+            <Link className={`${pathName === "/dashboard" ? "text-[#60e5ae]" : "text-white"}`} href="/dashboard"><li className=" text-lg font-500 flex items-center gap-x-1">
               <FaClipboardList /> Task{" "}
             </li></Link>
-            <Link href="/dashboard/spine"><li className="text-white text-lg font-500 flex items-center gap-x-1">
-              <PiSpinnerGapFill /> Spin
+
+            <Link className={`${pathName === "/dashboard/spine" ? "text-[#60e5ae]" : "text-white"}`} href="/dashboard/spine"><li className=" text-lg font-500 flex items-center gap-x-1">
+              <PiSpinnerGapFill /> Spine
             </li></Link>
           </ul>
         </div>
