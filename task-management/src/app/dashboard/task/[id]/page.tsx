@@ -1,4 +1,3 @@
-"use client";
 import getATask from "@/lib/task/getATask";
 import React from "react";
 import { BsCalendarDate } from "react-icons/bs";

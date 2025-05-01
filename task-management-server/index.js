@@ -14,6 +14,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
+      "http://localhost:3000",
       "https://engrsakib-blood-donations-project.netlify.app"
     ], // Replace with your React app's URL
     credentials: true, // Allow credentials (cookies)
@@ -156,8 +157,14 @@ async function run() {
       }
       res.status(200).send(result);
     });
+    
     // add task in database
-
+    app.post("/add/task", async (req, res) => {
+      const task = req.body;
+      // console.log(task);
+      const result = await TasMateTasks.insertOne(task);
+      res.status(200).send(result);
+    });
   
   
     

@@ -14,7 +14,7 @@ export default function AddTaskForm() {
   const [shortDescription, setShortDescription] = useState('')
   const [category, setCategory] = useState('')
   const [status, setStatus] = useState('')
-  const [authorEmail, setAuthorEmail] = useState('')
+
   const [date, setDate] = useState(new Date())
   const [day, setDay] = useState('')
 
@@ -41,13 +41,14 @@ export default function AddTaskForm() {
       shortDescription,
       category,
       status,
-      author: authorEmail,
+      author: "engrsakiv",
+      email: "engrsakib02@gmail.com",
       date: formatDate(date),
       day
     }
 
     try {
-      const res = await fetch('/api/tasks', {
+      const res = await fetch('http://localhost:5000/add/task', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -76,7 +77,7 @@ export default function AddTaskForm() {
   }
 
   return (
-    <div className="max-w-lg mx-auto p-6 shadow rounded">
+    <div className="max-w-lg mx-auto p-6 rounded my-1.5">
       <h2 className="text-2xl font-bold mb-4">Add New Task</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Title */}
@@ -87,7 +88,7 @@ export default function AddTaskForm() {
             value={title}
             onChange={e => setTitle(e.target.value)}
             required
-            className="w-full border p-2 rounded"
+            className="w-full border p-2 rounded input input-success"
             placeholder="Task title"
           />
         </div>
@@ -99,7 +100,7 @@ export default function AddTaskForm() {
             value={shortDescription}
             onChange={e => setShortDescription(e.target.value)}
             required
-            className="w-full border p-2 rounded"
+            className="w-full border p-2 rounded textarea textarea-success"
             placeholder="Brief details"
           />
         </div>
@@ -111,7 +112,7 @@ export default function AddTaskForm() {
             value={category}
             onChange={e => setCategory(e.target.value)}
             required
-            className="w-full border p-2 rounded"
+            className="w-full border p-2 rounded select select-success"
           >
             <option value="" disabled>
               Select Category
@@ -131,7 +132,7 @@ export default function AddTaskForm() {
             value={status}
             onChange={e => setStatus(e.target.value)}
             required
-            className="w-full border p-2 rounded"
+            className="w-full border p-2 rounded select select-success"
           >
             <option value="" disabled>
               Select Status
@@ -143,20 +144,9 @@ export default function AddTaskForm() {
           </select>
         </div>
 
-        {/* Author Email */}
-        <div>
-          <label className="block font-medium">Author Email</label>
-          <input
-            type="email"
-            value={authorEmail}
-            onChange={e => setAuthorEmail(e.target.value)}
-            required
-            className="w-full border p-2 rounded"
-            placeholder="you@example.com"
-          />
-        </div>
 
-        {/* Date Picker */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Date Picker */}
         <div>
           <label className="block font-medium">Date</label>
           <DatePicker
@@ -164,7 +154,7 @@ export default function AddTaskForm() {
             onChange={date => date && setDate(date)}
             minDate={new Date()}
             dateFormat="dd MMMM yyyy"
-            className="w-full border p-2 rounded"
+            className="w-full border p-2 rounded input input-success"
           />
         </div>
 
@@ -177,6 +167,8 @@ export default function AddTaskForm() {
             readOnly
             className="w-full border p-2 rounded bg-gray-100"
           />
+        </div>
+
         </div>
 
         {/* Submit */}
