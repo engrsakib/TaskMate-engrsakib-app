@@ -34,13 +34,13 @@ export default function RootLayout({
         className={`${popins.className}`}
       >
         {/* dashboard */}
-        <div>
+        <div className="relative">
           <div className="dashboard-background min-h-[300px]">
             {/* menu */}
             <Menu></Menu>
           </div>
           {/* children */}
-          <div>
+          <div className="absolute top-60 lg:top-50 left-0 w-full h-full rounded-2xl drop-shadow-2xl">
           {children}
           </div>
         </div>
