@@ -1,8 +1,11 @@
 "use client";
+import Link from "next/link";
 import React from "react";
 import { BiTask } from "react-icons/bi";
 
 const DashboradMenu = () => {
+  const link = "/dashboard/task/add-task";
+  
   return (
     <div>
       <div className="flex justify-around max-sm:flex-col items-center p-4">
@@ -33,9 +36,9 @@ const DashboradMenu = () => {
               <option>South East Asia</option>
             </select>
           </div>
-          <button className="btn btn-wide btn-info  text-white px-4 py-2 rounded-lg">
+          <Link href={link} className="btn btn-wide btn-info  text-white px-4 py-2 rounded-lg">
             <BiTask /> Add Task
-          </button>
+          </Link>
         </div>
       </div>
     </div>
