@@ -15,7 +15,7 @@ app.use(
     origin: [
       "http://localhost:5173",
       "http://localhost:3000",
-      "https://engrsakib-blood-donations-project.netlify.app"
+      "https://engrsakib-blood-donations-project.netlify.app",
     ], // Replace with your React app's URL
     credentials: true, // Allow credentials (cookies)
   })
@@ -70,16 +70,9 @@ async function run() {
     // );
 
     // database filed create
-    const TaskMate = client
-      .db("TaskMate")
-      .collection("users");
-    
-    const TasMateTasks = client
-      .db("TaskMate")
-      .collection("task");
+    const TaskMateUser = client.db("TaskMate").collection("users");
 
-
-
+    const TasMateTasks = client.db("TaskMate").collection("task");
 
     // user related query
     // get users
@@ -128,20 +121,25 @@ async function run() {
     });
     // user added in database
     app.post("/users", async (req, res) => {
-      const newUser = req.body;
-      // console.log(newUser);
-      const result = await TaskMate.insertOne(newUser);
-      res.send(result);
+      const user = req.body;
+      // console.log(user);
+      
+      const query = { email: user.email };
+      const existingUser = await TaskMateUser.findOne(query);
+      if (existingUser) {
+        return res.status(409).send({ message: "User already exists" });
+      }
+      const result = await TaskMateUser.insertOne(user);
+      res.status(200).send(result);
     });
-
 
     // finds Task by user email
     app.get("/tasks/:email", async (req, res) => {
       const email = req.params.email;
-      
+
       const query = { email: email };
       const result = await TasMateTasks.find(query).toArray();
-      if(!result) {
+      if (!result) {
         return res.status(404).send({ message: "Task not found" });
       }
       res.status(200).send(result);
@@ -149,15 +147,15 @@ async function run() {
     // finds Task by user email and task id
     app.get("/task/:id", async (req, res) => {
       const id = req.params.id;
-      
+
       const query = { _id: new ObjectId(id) };
       const result = await TasMateTasks.findOne(query);
-      if(!result) {
+      if (!result) {
         return res.status(404).send({ message: "Task not found" });
       }
       res.status(200).send(result);
     });
-    
+
     // add task in database
     app.post("/add/task", async (req, res) => {
       const task = req.body;
@@ -165,13 +163,20 @@ async function run() {
       const result = await TasMateTasks.insertOne(task);
       res.status(200).send(result);
     });
-  
-  
-    
+
+    // delete task by id
+    app.delete("/delete/task/:id", async (req, res) => {
+      const id = req.params.id;
+      // console.log(id);
+      const query = { _id: new ObjectId(id) };
+      const result = await TasMateTasks.deleteOne(query);
+      if (!result) {
+        return res.status(404).send({ message: "Task not found" });
+      }
+      res.status(200).send(result);
+    });
 
     // donations related works
-
-   
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();

@@ -1,16 +1,18 @@
-'use client';
-import React, { useState, useMemo } from 'react';
-import Swal from 'sweetalert2';
-import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
-import Link from 'next/link';
+"use client";
+import React, { useState, useMemo } from "react";
+import Swal from "sweetalert2";
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import Link from "next/link";
+import { registerUser } from "@/app/action/auth/registerUser";
 
 export default function RegistrationForm() {
-  const [fullName, setFullName] = useState('');
-  const [email,    setEmail   ] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirm,  setConfirm ] = useState('');
-  const [showPwd,  setShowPwd ] = useState(false);
-  const [loading, setLoading ] = useState(false);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [showPwd, setShowPwd] = useState(false);
+  
 
   // Password strength scoring
   const strength = useMemo(() => {
@@ -18,42 +20,40 @@ export default function RegistrationForm() {
     if (password.length >= 8) score++;
     if (/[A-Z]/.test(password)) score++;
     if (/[a-z]/.test(password)) score++;
-    if (/\d/.test(password))    score++;
+    if (/\d/.test(password)) score++;
     if (/[^A-Za-z0-9]/.test(password)) score++;
     switch (score) {
-      case 5: return 'Too Strong';
-      case 4: return 'Strong';
-      case 3: return 'Medium';
-      case 2: return 'Weak';
-      default: return 'Too Weak';
+      case 5:
+        return "Too Strong";
+      case 4:
+        return "Strong";
+      case 3:
+        return "Medium";
+      case 2:
+        return "Weak";
+      default:
+        return "Too Weak";
     }
   }, [password]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirm) {
-      return Swal.fire({ icon:'error', title:'Error', text:'Passwords do not match.' });
-    }
-    if (strength === 'Too Weak' || strength === 'Weak') {
-      return Swal.fire({ icon:'warning', title:'Weak Password', text:'Choose a stronger password.' });
-    }
-
-    setLoading(true);
-    try {
-      const res = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: { 'Content-Type':'application/json' },
-        body: JSON.stringify({ fullName, email, password }),
+      return Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Passwords do not match.",
       });
-      if (!res.ok) throw new Error((await res.json()).message || 'Signup failed');
-      await res.json();
-      Swal.fire({ icon:'success', title:'Registered!', text:'Your account has been created.' });
-      // Optionally redirect or clear form...
-    } catch (err: any) {
-      Swal.fire({ icon:'error', title:'Signup Failed', text: err.message });
-    } finally {
-      setLoading(false);
     }
+    if (strength === "Too Weak" || strength === "Weak") {
+      return Swal.fire({
+        icon: "warning",
+        title: "Weak Password",
+        text: "Choose a stronger password.",
+      });
+    }
+   
+      registerUser({ firstName, lastName, email, password });
   };
 
   return (
@@ -64,29 +64,44 @@ export default function RegistrationForm() {
       </h2>
       <form onSubmit={handleSubmit} className="mt-6 space-y-5">
         <input
-          type="text" required
-          value={fullName} onChange={e=>setFullName(e.target.value)}
-          placeholder="Full Name"
+          type="text"
+          required
+          value={firstName}
+          onChange={(e) => setFirstName(e.target.value)}
+          placeholder="First Name"
           className="w-full border px-3 py-2 rounded focus:outline-none focus:border-blue-500"
         />
 
         <input
-          type="email" required
-          value={email} onChange={e=>setEmail(e.target.value)}
+          type="text"
+          required
+          value={lastName}
+          onChange={(e) => setLastName(e.target.value)}
+          placeholder="Last Name"
+          className="w-full border px-3 py-2 rounded focus:outline-none focus:border-blue-500"
+        />
+
+        <input
+          type="email"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
           className="w-full border px-3 py-2 rounded focus:outline-none focus:border-blue-500"
         />
 
         <div className="relative">
           <input
-            type={showPwd ? 'text' : 'password'} required
-            value={password} onChange={e=>setPassword(e.target.value)}
+            type={showPwd ? "text" : "password"}
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
             className="w-full border px-3 py-2 rounded pr-10 focus:outline-none focus:border-blue-500"
           />
           <button
             type="button"
-            onClick={()=>setShowPwd(v=>!v)}
+            onClick={() => setShowPwd((v) => !v)}
             className="absolute inset-y-0 right-2 flex items-center text-gray-600"
           >
             {showPwd ? <AiFillEyeInvisible /> : <AiFillEye />}
@@ -95,31 +110,42 @@ export default function RegistrationForm() {
 
         {password && (
           <div className="text-sm">
-            Strength: <span className={
-              strength==='Too Strong'? 'text-green-700' :
-              strength==='Strong'?    'text-green-500' :
-              strength==='Medium'?    'text-yellow-500' :
-              strength==='Weak'?      'text-orange-500' : 'text-red-500'
-            }>{strength}</span>
+            Strength:{" "}
+            <span
+              className={
+                strength === "Too Strong"
+                  ? "text-green-700"
+                  : strength === "Strong"
+                  ? "text-green-500"
+                  : strength === "Medium"
+                  ? "text-yellow-500"
+                  : strength === "Weak"
+                  ? "text-orange-500"
+                  : "text-red-500"
+              }
+            >
+              {strength}
+            </span>
           </div>
         )}
 
         <input
-          type="password" required
-          value={confirm} onChange={e=>setConfirm(e.target.value)}
+          type="password"
+          required
+          value={confirm}
+          onChange={(e) => setConfirm(e.target.value)}
           placeholder="Confirm Password"
           className="w-full border px-3 py-2 rounded focus:outline-none focus:border-blue-500"
         />
 
         <button
           type="submit"
-          disabled={loading}
           className="w-full bg-[rgb(86,296,229)] text-black py-2 rounded hover:bg-[rgb(78,228,203)] disabled:opacity-50 transition"
         >
-          {loading ? 'Registering…' : 'Register'}
+          Register
         </button>
         <div className="text-center text-sm text-gray-600">
-          Already have an account?{' '}
+          Already have an account?{" "}
           <Link href="/auth/login" className="text-blue-500 hover:underline">
             Sign Up
           </Link>

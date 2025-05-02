@@ -1,4 +1,6 @@
+import DetailsPageMenu from "@/component/auth/dashboard/DetailsPageMenu";
 import getATask from "@/lib/task/getATask";
+import Link from "next/link";
 import React from "react";
 import { BsCalendarDate } from "react-icons/bs";
 import { FaSwatchbook } from "react-icons/fa";
@@ -6,18 +8,11 @@ import { FaSwatchbook } from "react-icons/fa";
 export default async function page({ params }: { params: { id: string } }) {
   const { id } = params;
   const data = await getATask({ id });
-  console.log(data);
+  
   return (
     <div className="bg-white w-[90%] mx-auto py-4 min-h-screen lg:h-screen border-transparent rounded-2xl drop-shadow-2xl">
       {/* menue */}
-      <div className="border-b-1 h-[100px] border-gray-600 p-4 flex justify-between items-center">
-        <h1 className="text-2xl text-black">Task Details</h1>
-
-        <div className="flex items-center gap-x-2">
-          <button className="btn btn-primary">Edit</button>
-          <button className="btn btn-secondary">Delete</button>
-          </div>
-      </div>
+      <DetailsPageMenu id={data?._id} />
       {/* task detials */}
       <div className="w-full h-[80%] flex flex-col justify-between ">
         <div className="w-10/12 mt-9 mx-auto flex items-center gap-x-1">
