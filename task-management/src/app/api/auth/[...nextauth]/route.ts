@@ -26,7 +26,7 @@ const handler = NextAuth({
         // (i.e., the request IP address)
         
         const user = await logInUser(credentials);
-
+        // console.log(user)
         if (user) {
           return user;
         }else {

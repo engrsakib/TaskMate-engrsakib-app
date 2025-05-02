@@ -3,10 +3,12 @@ import React from 'react'
 import noData from '@/assets/images/nodata.svg'
 import getAllTask from '@/lib/task/getAllTask';
 import DashboardTask from './DashboardTask';
+import { useSession } from 'next-auth/react';
+
 
 export default async function DashboardItems() {
     const user = {
-        email: "engrsakib02@gmail.com"
+        email: 'engrsakib02@gmail.com',
     }
     const task = await getAllTask(user);
 

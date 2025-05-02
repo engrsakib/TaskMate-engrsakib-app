@@ -43,7 +43,7 @@ const DashboardTask = ({ task }: { task: Task }) => {
         </div>
 
         <div className="flex items-center gap-x-1"> 
-        <BsCalendarDate /> <p>{task?.day} {task?.date}</p>
+        <BsCalendarDate /> <p> {task?.date}</p>
         </div>
 
         <div className={`badge badge-outline ${task?.status === "completed" ? "badge-success" : task?.status === "pending" ? "badge-warning" : "badge-error"}`}> 

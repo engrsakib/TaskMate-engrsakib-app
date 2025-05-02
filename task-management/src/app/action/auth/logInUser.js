@@ -1,24 +1,25 @@
-'use server'
+"use server";
 import bcrypt from "bcrypt";
-export const logInUser = async (userData) => {  
+export const logInUser = async (userData) => {
   const { email, password } = userData;
-  const res = await fetch(`http://localhost:5000/user/login/${email}`, {
-    next: { revalidate: 10 },
-  });
+  const res = await fetch(
+    `https://task-management-server-alpha-two.vercel.app/user/login/${email}`,
+    {
+      next: { revalidate: 10 },
+    }
+  );
   const user = await res.json();
- 
+
   // console.log(user)
-  
-  if(!user) {
+
+  if (!user) {
     return null;
   }
 
   const isPasswordValid = await bcrypt.compare(password, user.password);
-  if(!isPasswordValid) {
+  if (!isPasswordValid) {
     return null;
   }
-  
-  
-    return user;
-  
-}
+
+  return user;
+};

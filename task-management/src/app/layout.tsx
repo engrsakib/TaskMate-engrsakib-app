@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Poppins,} from "next/font/google";
 import "./globals.css";
-import NextAuthSessionProvider from "@/provider/NextAuthSessionProvider";
+import NextAuthProvider from './../Providers/NextAuthProvider';
+
 
 const popins = Poppins({
   variable: "--font-geist-sans",
@@ -33,7 +34,9 @@ export default function RootLayout({
       <body
         className={`${popins.className}`}
       >
+        <NextAuthProvider>
         {children}
+        </NextAuthProvider>
       </body>
       
     </html>

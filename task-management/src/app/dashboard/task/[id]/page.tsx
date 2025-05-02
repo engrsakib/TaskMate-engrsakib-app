@@ -1,78 +1,134 @@
-import DetailsPageMenu from "@/component/auth/dashboard/DetailsPageMenu";
-import getATask from "@/lib/task/getATask";
-import Link from "next/link";
-import React from "react";
-import { BsCalendarDate } from "react-icons/bs";
-import { FaSwatchbook } from "react-icons/fa";
+// app/dashboard/task/[id]/page.tsx
+'use client'
 
-export default async function page({ params }: { params: { id: string } }) {
-  const { id } = params;
-  const data = await getATask({ id });
-  
+import React, { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import DetailsPageMenu from '@/component/auth/dashboard/DetailsPageMenu'
+import getATask from '@/lib/task/getATask'
+import { BsCalendarDate } from 'react-icons/bs'
+import { FaSwatchbook } from 'react-icons/fa'
+
+interface Task {
+  _id: string
+  title: string
+  shortDescription: string
+  day: string
+  date: string
+  status: string
+  category: string
+}
+
+export default function TaskDetailsPage({ params }: { params: { id: string } }) {
+  const router = useRouter()
+  const [data, setData] = useState<Task | null>(null)
+  const [category, setCategory] = useState('')
+  const [status, setStatus] = useState('')
+
+  // Fetch task on mount
+  useEffect(() => {
+    async function fetchTask() {
+      const task = await getATask({ id: params.id })
+      setData(task)
+      setCategory(task.category)
+      setStatus(task.status)
+    }
+    fetchTask()
+  }, [params.id])
+
+  const handleSave = async () => {
+    if (!data) return
+    await fetch(`/api/task/${data._id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ category, status }),
+    })
+    router.refresh()
+  }
+
+  if (!data) {
+    return <p className="text-center p-8">Loading...</p>
+  }
+
   return (
-    <div className="bg-white w-[90%] mx-auto py-4 min-h-screen lg:h-screen border-transparent rounded-2xl drop-shadow-2xl">
-      {/* menue */}
-      <DetailsPageMenu id={data?._id} />
-      {/* task detials */}
-      <div className="w-full h-[80%] flex flex-col justify-between ">
-        <div className="w-10/12 mt-9 mx-auto flex items-center gap-x-1">
-          <div className="flex gap-2 items-center justify-between w-full">
-            <div className="bg-cyan-400 w-[80px] max-sm:hidden h-[80px] text-4xl rounded-full flex justify-center items-center">
-              <FaSwatchbook />
-            </div>
+    <div className="bg-white w-[90%] mx-auto py-4 min-h-screen rounded-2xl drop-shadow-2xl">
+      {/* Menu */}
+      <DetailsPageMenu id={data._id} />
 
-            <div className="w-11/12 mt-9 mx-auto">
-              <h1 className="lg:text-4xl text-[25px] font-bold">
-                {data?.title}
-              </h1>
-              <p className="text-gray-500 text-md mt-2">
-                {data?.shortDescription}{" "}
-                <span>
-                  Female data refers to information collected and disaggregated
-                  by sex, focusing on womens experiences, needs, and outcomes
-                  across various domains like health, education
-                </span>
-              </p>
-            </div>
+      {/* Content */}
+      <div className="p-6 space-y-8">
+        {/* Header */}
+        <div className="flex items-start gap-6">
+          <div className="bg-cyan-400 w-20 h-20 text-4xl rounded-full flex justify-center items-center">
+            <FaSwatchbook />
+          </div>
+          <div className="flex-1">
+            <h1 className="text-4xl font-bold">{data.title}</h1>
+            <p className="text-gray-500 mt-2">{data.shortDescription}</p>
           </div>
         </div>
 
-        {/* date and Time */}
-        <div className="w-10/12 mt-4 mx-auto flex justify-between max-sm:flex-wrap max-sm:gap-y-2 items-center gap-x-1">
-          <div className="w-10/12 mt-4 mx-auto flex items-center gap-x-1 text-xl lg:text-3xl">
-            <BsCalendarDate />{" "}
-            <p className="text-md text-gray-900">
-              {data?.day} {data?.date}
-            </p>
+        {/* Date & Status Display */}
+        <div className="flex flex-wrap justify-between items-center gap-4">
+          <div className="flex items-center gap-2 text-xl">
+            <BsCalendarDate />
+            <span>{`${data.day}, ${data.date}`}</span>
           </div>
-
-          <div
-            className={`w-10/12 mt-4 mx-auto flex items-center gap-x-1 text-xl lg:text-3xl ${
-              data?.status === "completed"
-                ? "text-green-500"
-                : data?.status === "pending"
-                ? "text-yellow-500"
-                : "text-red-500"
+          <span
+            className={`px-4 py-2 rounded-full text-white font-semibold ${
+              data.status === 'completed'
+                ? 'bg-green-500'
+                : data.status === 'pending'
+                ? 'bg-yellow-500'
+                : 'bg-red-500'
             }`}
           >
-            <li>{data?.status}</li>
-          </div>
+            {data.status}
+          </span>
         </div>
 
-        {/* catagory status date */}
-        <div className="w-10/12 mt-4 mx-auto flex justify-between flex-wrap max-sm:gap-y-2 items-center gap-x-1">
-          <select
-            defaultValue="Pick a Runtime"
-            className="select select-success"
-          >
-            <option disabled={true}>Pick a category</option>
-            <option>pending</option>
-            <option>inprogress</option>
-            <option>ongoing</option>
-            <option>completed</option>
-          </select>
+        {/* Editable Fields */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Category */}
+          <div>
+            <label className="block font-medium mb-1">Category</label>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="select select-bordered w-full"
+            >
+              <option value="">Select category</option>
+              <option value="art and craft">Art & Craft</option>
+              <option value="nature">Nature</option>
+              <option value="family">Family</option>
+              <option value="sports">Sports</option>
+              <option value="friends">Friends</option>
+            </select>
+          </div>
+
+          {/* Status */}
+          <div>
+            <label className="block font-medium mb-1">Status</label>
+            <select
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+              className="select select-bordered w-full"
+            >
+              <option value="">Select status</option>
+              <option value="pending">Pending</option>
+              <option value="inprogress">In Progress</option>
+              <option value="ongoing">Ongoing</option>
+              <option value="completed">Completed</option>
+            </select>
+          </div>
+
+          {/* Save */}
+          <div className="flex items-end">
+            <button onClick={handleSave} className="btn btn-primary w-full">
+              Save Changes
+            </button>
+          </div>
         </div>
       </div>
     </div>
-  );
+  )
 }

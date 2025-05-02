@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 import Link from 'next/link';
-import { useSession, signIn, signOut } from "next-auth/react"
-import { useRouter } from 'next/navigation';
+import {  signIn, } from "next-auth/react"
+
 
 export default function LogInForm() {
   const [email, setEmail] = useState('');

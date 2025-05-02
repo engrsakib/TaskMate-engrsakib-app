@@ -9,14 +9,16 @@ import userImage from "@/assets/images/user.svg";
 import { MdOutlineArrowDropDown } from "react-icons/md";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 export default function Menu() {
   const pathName = usePathname();
+  const session = useSession();
   
   const user = {
     FirstName: "Md. Nazmus ",
     LastName: "Sakib",
-    email: "test@email.com",
+    email: session?.data?.user?.email,
     img: userImage,
     role: "admin",
   };

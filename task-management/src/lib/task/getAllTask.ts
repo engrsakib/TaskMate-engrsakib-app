@@ -1,6 +1,6 @@
 export default async function getAllTask({ email }: { email: string }) {
-  const res = await fetch(`http://localhost:5000/tasks/${email}`, {
-    next: { revalidate: 60 },
+  const res = await fetch(`https://task-management-server-alpha-two.vercel.app/tasks/${email}`, {
+    next: { revalidate: 0 },
   });
   if (!res.ok) {
     throw new Error("Failed to fetch data");
