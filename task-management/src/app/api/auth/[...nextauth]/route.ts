@@ -1,5 +1,7 @@
 import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
+import { logInUser } from './../../../action/auth/logInUser';
+
 const handler = NextAuth({
   // Add your NextAuth configuration here
   providers: [
@@ -11,34 +13,34 @@ const handler = NextAuth({
       // e.g. domain, username, password, 2FA token, etc.
       // You can pass any HTML attribute to the <input> tag through the object.
       credentials: {
-        username: { label: "Username", type: "text", placeholder: "jsmith" },
-        password: { label: "Password", type: "password" },
-        email: { label: "email", type: "email" }
+        username: { label: "email", type: "text", placeholder: "enter your email" },
+        password: { label: "Password", type: "password" }
       },
       async authorize(credentials, req) {
+        console.log(credentials)
         // You need to provide your own logic here that takes the credentials
         // submitted and returns either a object representing a user or value
         // that is false/null if the credentials are invalid.
         // e.g. return { id: 1, name: 'J Smith', email: 'jsmith@example.com' }
         // You can also use the `req` object to obtain additional parameters
         // (i.e., the request IP address)
-        const res = await fetch("/your/endpoint", {
-          method: 'POST',
-          body: JSON.stringify(credentials),
-          headers: { "Content-Type": "application/json" }
-        })
-        const user = await res.json()
-  
-        // If no error and we have user data, return it
-        if (res.ok && user) {
-          return user
+        
+        const user = await logInUser(credentials);
+
+        if (user) {
+          return user;
+        }else {
+          return null;
         }
-        // Return null if user data could not be retrieved
-        return null
+     
+        return null;
       }
     })
   ],
   secret: process.env.NEXTAUTH_SECRET,
+  pages: {
+    signIn: "/auth/login", 
+   } // Displays signin buttons (e.g. sign in with Google)     
 })
 
 export { handler as GET, handler as POST }

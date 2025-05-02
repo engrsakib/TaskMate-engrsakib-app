@@ -5,6 +5,7 @@ const app = express();
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+const e = require("express");
 const stripe = require("stripe")(process.env.PAYMENT_SECRET);
 const port = process.env.PORT || 5000;
 //
@@ -76,11 +77,11 @@ async function run() {
 
     // user related query
     // get users
-    app.get("/users/:mail", async (req, res) => {
+    app.get("/user/login/:mail", async (req, res) => {
       try {
         const email = req.params.mail;
-
-        const result = await TaskMate.findOne({ email });
+        
+        const result = await TaskMateUser.findOne({ email });
 
         if (!result) {
           return res.status(404).send({ message: "User not found" });

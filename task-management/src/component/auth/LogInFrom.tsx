@@ -3,44 +3,35 @@ import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 import Link from 'next/link';
+import { useSession, signIn, signOut } from "next-auth/react"
+import { useRouter } from 'next/navigation';
 
 export default function LogInForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-
+  // const router = useRouter();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-
+    
+    // console.log("signIn: ",email, password);
+   
     try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (!res.ok) {
-        const { message } = await res.json();
-        throw new Error(message || 'Login failed');
-      }
-
-      await res.json(); // assume { user, token }
-      Swal.fire({
-        icon: 'success',
-        title: 'Logged in!',
-        text: 'You have successfully signed in.',
-      });
-    } catch (err: any) {
+      await signIn('credentials', { email, password, redirect: true, callbackUrl: '/dashboard' });
+      // router.push('/dashboard'); // Redirect to the home page or any other page after successful sign-in
+    } catch (error) {
+      console.error('Error during sign-in:', error);
       Swal.fire({
         icon: 'error',
-        title: 'Login Failed',
-        text: err.message,
+        title: 'Error',
+        text: 'An error occurred during sign-in. Please try again.',
       });
-    } finally {
-      setLoading(false);
+      
     }
+
+      
+    
   };
 
   return (

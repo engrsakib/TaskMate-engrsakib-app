@@ -56,7 +56,7 @@ export default function RegistrationForm() {
    
       const isSuccess = await registerUser({ firstName, lastName, email, password });
       if (isSuccess.acknowledged == true && isSuccess.insertedId) {
-        router.push("/dashboard/auth/login");
+        router.push("/auth/login");
         Swal.fire({
           icon: "success",
           title: "Success",
