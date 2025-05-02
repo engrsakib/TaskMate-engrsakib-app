@@ -5,7 +5,7 @@ export const registerUser = async (userData) => {
   const { firstName, lastName, email, password } = userData;
   const hashedPassword = await bcrypt.hash(password, 10);
   
-  console.log("hashpassword: ",hashedPassword)
+  
 
   const user = {
     firstName: firstName,
@@ -24,6 +24,7 @@ export const registerUser = async (userData) => {
     body: JSON.stringify(user),
   });
   const data = await res.json();
+  console.log(data)
   if (res.status === 200) {
     return data;
   } else {

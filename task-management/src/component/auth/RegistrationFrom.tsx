@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import Link from "next/link";
 import { registerUser } from "@/app/action/auth/registerUser";
+import { useRouter } from "next/navigation";
 
 export default function RegistrationForm() {
   const [firstName, setFirstName] = useState("");
@@ -13,7 +14,7 @@ export default function RegistrationForm() {
   const [confirm, setConfirm] = useState("");
   const [showPwd, setShowPwd] = useState(false);
   
-
+  const router = useRouter();
   // Password strength scoring
   const strength = useMemo(() => {
     let score = 0;
@@ -53,7 +54,21 @@ export default function RegistrationForm() {
       });
     }
    
-      registerUser({ firstName, lastName, email, password });
+      const isSuccess = await registerUser({ firstName, lastName, email, password });
+      if (isSuccess.acknowledged == true && isSuccess.insertedId) {
+        router.push("/dashboard/auth/login");
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "Registration successful!",
+        });
+      }else {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: isSuccess.message,
+        });
+      }
   };
 
   return (
